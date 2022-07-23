@@ -1,7 +1,9 @@
 package com.hunky.marketplaceapp.web.rest;
 
 import com.hunky.marketplaceapp.model.Product;
+import com.hunky.marketplaceapp.model.User;
 import com.hunky.marketplaceapp.service.ProductService;
+import com.hunky.marketplaceapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +13,12 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService ps;
+    private final UserService us;
 
     @Autowired
-    public ProductController(ProductService ps) {
+    public ProductController(ProductService ps, UserService us) {
         this.ps = ps;
+        this.us = us;
     }
 
     @GetMapping("/products")
@@ -25,6 +29,11 @@ public class ProductController {
     @GetMapping("/products/{id}")
     public Product getProductById(@PathVariable Long id) {
         return ps.getProductById(id);
+    }
+
+    @GetMapping("/products/{id}/users")
+    public List<User> getUsersByProductId(@PathVariable Long id) {
+        return us.getUsersByProductId(id);
     }
 
     @PostMapping(value = "/products")

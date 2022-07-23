@@ -1,5 +1,6 @@
 package com.hunky.marketplaceapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "products")
     private List<User> users = new ArrayList<>();
 

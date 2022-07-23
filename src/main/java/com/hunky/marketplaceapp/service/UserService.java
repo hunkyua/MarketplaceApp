@@ -34,6 +34,10 @@ public class UserService {
                 String.format("User with id %s was not found.", id)));
     }
 
+    public List<User> getUsersByProductId(Long id) {
+        return userRepo.findByProducts_Id(id);
+    }
+
     public User addUser(User user) {
         return userRepo.save(user);
     }
@@ -43,13 +47,13 @@ public class UserService {
     }
 
     @Transactional
-    public User buyProduct(Long userId, Long productId) {
+    public String buyProduct(Long userId, Long productId) {
         User user = userRepo.findById(userId).orElseThrow(
                 () -> new NotFoundException(String.format("User with id %s was not found.", userId)));
         Product product = productRepo.findById(productId).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id %s was not found.", productId)));
         user.buyProduct(product);
-        return user;
+        return String.format("Item %s successfully purchased", product.getName());
     }
 
     @Transactional

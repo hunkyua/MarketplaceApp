@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @PatchMapping("/users/{userId}/products/{productId}")
-    User buyProductByUser(@PathVariable Long userId, @PathVariable Long productId) {
+    String buyProductByUser(@PathVariable Long userId, @PathVariable Long productId) {
         return us.buyProduct(userId, productId);
     }
 }
