@@ -1,38 +1,31 @@
 package com.hunky.marketplaceapp.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.context.annotation.Scope;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@Scope("prototype")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = {"users"})
+@ToString(exclude = {"users"})
 @Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "price")
-    private double price;
+    private Double price;
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @ManyToMany(mappedBy = "products")
+    private List<User> users = new ArrayList<>();
 
-    public Product() {
-
-    }
-
-    public Product(String name, double price) {
-        this.name = name;
-        this.price = price;
-    }
 }

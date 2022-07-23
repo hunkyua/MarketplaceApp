@@ -1,40 +1,54 @@
 package com.hunky.marketplaceapp.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.context.annotation.Scope;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hunky.marketplaceapp.web.exceptions.NotEnoughMoneyException;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@Scope("prototype")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = {"products"})
+@ToString(exclude = {"products"})
 @Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "firstName")
+    private String firstName;
 
     @Column(name = "lastName")
     private String lastName;
 
     @Column(name = "amountOfMoney")
-    private double amountOfMoney;
+    private Double amountOfMoney;
 
-    @OneToMany(mappedBy="user")
-    private List<Product> products;
+    @JsonBackReference
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "user_product",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products = new ArrayList<>();
 
-    public User() {}
+    public void buyProduct(Product product) throws NotEnoughMoneyException {
+        double balance = this.getAmountOfMoney() - product.getPrice();
+        if (balance >= 0.0) {
+            this.setAmountOfMoney(balance);
+        } else {
+            throw new NotEnoughMoneyException(this.firstName, product.getName());
+        }
 
-    public User(String name, String lastName, double amountOfMoney) {
-        this.name = name;
-        this.lastName = lastName;
-        this.amountOfMoney = amountOfMoney;
+        products.add(product);
     }
 }

@@ -1,8 +1,9 @@
 package com.hunky.marketplaceapp.web.rest;
 
+import com.hunky.marketplaceapp.model.Product;
 import com.hunky.marketplaceapp.model.User;
+import com.hunky.marketplaceapp.service.ProductService;
 import com.hunky.marketplaceapp.service.UserService;
-import com.hunky.marketplaceapp.web.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,47 +12,47 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    private final UserService userService;
+    private final UserService us;
+    private final ProductService ps;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService us, ProductService ps) {
+        this.us = us;
+        this.ps = ps;
     }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return userService.getAllUsers();
+        return us.getAllUsers();
     }
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return us.getUserById(id);
+    }
+
+    @GetMapping("/users/{id}/products")
+    public List<Product> getProductsByUserId(@PathVariable Long id) {
+        return ps.getProductsByUserId(id);
     }
 
     @PostMapping("/users")
-    public User addUser(@RequestBody User newUser) {
-        return userService.addUser(newUser);
+    public User addUser(@RequestBody User user) {
+        return us.addUser(user);
     }
 
     @DeleteMapping("/users/{id}")
     void deleteUser(@PathVariable Long id) {
-        userService.deleteById(id);
+        us.deleteById(id);
     }
 
     @PutMapping("/users/{id}")
-    User replaceUser(@RequestBody User newUser, @PathVariable Long id) {
-
-        return userService.getUserById(id)
-                .map(user -> {
-                    user.setName(newUser.getName());
-                    user.setLastName(newUser.getLastName());
-                    user.setAmountOfMoney(newUser.getAmountOfMoney());
-                    return userService.addUser(user);
-                })
-                .orElseGet(() -> {
-                    newUser.setId(id);
-                    return userService.addUser(newUser);
-                });
+    User editUser(@RequestBody User user, @PathVariable Long id) {
+        return us.editUser(user, id);
     }
 
+    @PatchMapping("/users/{userId}/products/{productId}")
+    User buyProductByUser(@PathVariable Long userId, @PathVariable Long productId) {
+        return us.buyProduct(userId, productId);
+    }
 }
