@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,8 +15,8 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -28,7 +28,7 @@ public class User {
     private double amountOfMoney;
 
     @OneToMany(mappedBy="user")
-    private Set<Product> product;
+    private List<Product> products;
 
     public User() {}
 

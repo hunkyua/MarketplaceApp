@@ -45,6 +45,7 @@ public class ProductController {
                 .map(product -> {
                     product.setName(newProduct.getName());
                     product.setPrice(newProduct.getPrice());
+                    product.setUser(newProduct.getUser());
                     return productService.addProduct(product);
                 })
                 .orElseGet(() -> {
