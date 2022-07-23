@@ -2,39 +2,49 @@ package com.hunky.marketplaceapp.service;
 
 import com.hunky.marketplaceapp.model.Product;
 import com.hunky.marketplaceapp.repository.ProductRepository;
+import com.hunky.marketplaceapp.repository.UserRepository;
 import com.hunky.marketplaceapp.web.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class ProductService {
 
+    private final ProductRepository productRepo;
+    private final UserRepository userRepo;
+
     @Autowired
-    private ProductRepository productRepository;
+    public ProductService(UserRepository userRepo, ProductRepository productRepo) {
+        this.userRepo = userRepo;
+        this.productRepo = productRepo;
+    }
 
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productRepo.findAll();
     }
 
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(
+        return productRepo.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id %s was not found.", id)));
     }
 
     public List<Product> getProductsByUserId(Long userId) {
-        return productRepository.findByUsers_Id(userId);
+        return productRepo.findByUsers_Id(userId);
     }
 
     public Product addProduct(Product product) {
-        return productRepository.save(product);
+        return productRepo.save(product);
     }
 
     public void deleteProductById(Long id) {
-        productRepository.deleteById(id);
+        userRepo.findAll().forEach(user ->
+                user.getProducts().removeIf(product ->
+                        Objects.equals(product.getId(), id)));
+        productRepo.deleteById(id);
     }
 
     @Transactional

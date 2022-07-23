@@ -16,37 +16,37 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final ProductRepository productRepository;
+    private final UserRepository userRepo;
+    private final ProductRepository productRepo;
 
     @Autowired
-    public UserService(UserRepository userRepository, ProductRepository productRepository) {
-        this.userRepository = userRepository;
-        this.productRepository = productRepository;
+    public UserService(UserRepository userRepo, ProductRepository productRepo) {
+        this.userRepo = userRepo;
+        this.productRepo = productRepo;
     }
 
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepo.findAll();
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(
+        return userRepo.findById(id).orElseThrow(() -> new NotFoundException(
                 String.format("User with id %s was not found.", id)));
     }
 
     public User addUser(User user) {
-        return userRepository.save(user);
+        return userRepo.save(user);
     }
 
     public void deleteById(Long id) {
-        userRepository.deleteById(id);
+        userRepo.deleteById(id);
     }
 
     @Transactional
     public User buyProduct(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElseThrow(
+        User user = userRepo.findById(userId).orElseThrow(
                 () -> new NotFoundException(String.format("User with id %s was not found.", userId)));
-        Product product = productRepository.findById(productId).orElseThrow(
+        Product product = productRepo.findById(productId).orElseThrow(
                 () -> new NotFoundException(String.format("Product with id %s was not found.", productId)));
         user.buyProduct(product);
         return user;
