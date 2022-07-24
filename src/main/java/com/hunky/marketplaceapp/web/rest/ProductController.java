@@ -7,6 +7,7 @@ import com.hunky.marketplaceapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/products")
-    public Product addProduct(@RequestBody Product product) {
+    public Product addProduct(@Valid @RequestBody Product product) {
         return ps.addProduct(product);
     }
 
@@ -47,7 +48,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    Product editProduct(@RequestBody Product product, @PathVariable Long id) {
+    Product editProduct(@Valid @RequestBody Product product, @PathVariable Long id) {
         return ps.editProduct(product, id);
     }
 

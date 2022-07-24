@@ -7,6 +7,7 @@ import com.hunky.marketplaceapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User addUser(@RequestBody User user) {
+    public User addUser(@Valid @RequestBody User user) {
         return us.addUser(user);
     }
 
@@ -47,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    User editUser(@RequestBody User user, @PathVariable Long id) {
+    User editUser(@Valid @RequestBody User user, @PathVariable Long id) {
         return us.editUser(user, id);
     }
 

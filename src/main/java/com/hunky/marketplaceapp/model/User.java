@@ -5,6 +5,9 @@ import com.hunky.marketplaceapp.web.exceptions.NotEnoughMoneyException;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +24,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Field firstName can't be blank")
+    @NotNull(message = "Field firstName can't be null")
     @Column(name = "firstName")
     private String firstName;
 
+    @NotBlank(message = "Field lastName can't be blank")
+    @NotNull(message = "Field lastName can't be null")
     @Column(name = "lastName")
     private String lastName;
 
+    @NotNull(message = "Field amountOfMoney can't be null")
+    @Digits(integer=10, fraction=2)
     @Column(name = "amountOfMoney")
     private Double amountOfMoney;
 
